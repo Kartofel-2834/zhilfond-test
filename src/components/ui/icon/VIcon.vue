@@ -11,17 +11,13 @@
 // Vue
 import { ref, computed, watch, onMounted } from 'vue';
 
-const basePath: string = import.meta.env.BASE_URL || '/';
-
 // Props
 interface IVIconProps {
     icon: string;
-    srcPath?: string;
     size?: string | number | null;
 }
 
 const $props = withDefaults(defineProps<IVIconProps>(), {
-    srcPath: 'icons/',
     size: null,
 });
 
@@ -30,11 +26,6 @@ const iconAttributes = ref<Record<string, string>>({});
 
 // Lifecycle hooks
 onMounted(updateIcon);
-
-/**
- * Путь к svg файлу иконки
- */
-const iconPath = computed<string>(() => `${basePath}${$props.srcPath}${$props.icon}.svg?raw`);
 
 /**
  * Если проп size указан, то width: size в ремах / 10
@@ -54,16 +45,14 @@ const customSize = computed<Partial<Record<string, string>>>(() => {
     };
 });
 
-watch(() => iconPath?.value, updateIcon);
+watch(() => $props.icon, updateIcon);
 
 /**
  * Метод для загрузки и отображения контента svg иконки
- *
- * @throws Бросит ошибку, если iconPath не валидный.
  */
 async function updateIcon(): Promise<void> {
     try {
-        const icon = await import(/* @vite-ignore */ iconPath.value);
+        const icon = await import(`../../../assets/icons/${$props.icon}.svg`);
         const data = icon?.default && typeof icon?.default === 'string' ? icon.default : '';
 
         const iconWrapper = document.createElement('div');

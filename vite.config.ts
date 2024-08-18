@@ -12,7 +12,12 @@ const isProd: boolean = process?.env?.NODE_ENV === 'production';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [vue(), svgLoader()],
+    plugins: [
+        vue(),
+        svgLoader({
+            defaultImport: 'raw',
+        }),
+    ],
 
     base: isProd ? '/zhilfond-test/' : '/',
 
