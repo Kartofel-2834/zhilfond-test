@@ -5,6 +5,9 @@
 
 Стек: Vue 3, Vuex, Typescript, SCSS (с CSS Modules).
 
+## Ссылка на результат
+https://kartofel-2834.github.io/zhilfond-test/
+
 ## .env файл проекта
 
 ```
