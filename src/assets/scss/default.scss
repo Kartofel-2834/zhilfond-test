@@ -1,0 +1,11 @@
+.container {
+    max-width: 1366px;
+    margin: 0 auto;
+    padding-right: 5rem;
+    padding-left: 5rem;
+
+    @include respond-to(tablet-sm) {
+        padding-right: 3rem;
+        padding-left: 3rem;
+    }
+}
