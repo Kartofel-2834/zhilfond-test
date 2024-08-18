@@ -39,7 +39,7 @@ import type { User } from '@/types/api/users-types';
 import type { IUsersState } from '@/store';
 
 // Vue
-import { ref, watch, computed, onMounted } from 'vue';
+import { ref, watch, computed } from 'vue';
 
 // Vuex
 import { useStore } from 'vuex';
@@ -61,9 +61,6 @@ const prevSearch = ref<string | null>(null);
 const timeoutId = ref<number>(NaN);
 const isLoading = ref<boolean>(false);
 
-// Lifecycle hooks
-onMounted(fetchUsers);
-
 // Watchers
 watch(() => search.value, onSearchUpdate);
 
@@ -81,7 +78,7 @@ function onSearchUpdate(newValue: string, oldValue: string): void {
         if (prevSearch.value !== search.value) fetchUsers();
 
         prevSearch.value = null;
-    }, 1000);
+    }, 500);
 }
 
 function onUserUpdate(user: User): void {
@@ -92,14 +89,14 @@ async function fetchUsers(): Promise<void> {
     const start = Date.now();
 
     try {
-        isLoading.value = true;
+        isLoading.value = Boolean(search.value);
 
         const params = getSearchParams();
         await $store.dispatch('fetchUsers', params);
 
         const loadingTime = Date.now() - start;
 
-        if (loadingTime < 600) await sleep(600 - loadingTime);
+        if (loadingTime < 600 && isLoading.value) await sleep(600 - loadingTime);
     } catch (err) {
         console.warn('[UsersPage/fetchUsers] request error:', err);
     } finally {

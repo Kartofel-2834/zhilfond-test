@@ -36,7 +36,14 @@
             key="nodata"
             :class="$style.nodata"
         >
-            ничего не найдено
+            <transition
+                name="fade"
+                mode="out-in"
+            >
+                <span :key="nodataLabel">
+                    {{ nodataLabel }}
+                </span>
+            </transition>
         </div>
     </transition-group>
 </template>
@@ -44,6 +51,9 @@
 <script lang="ts" setup>
 // Types
 import type { User } from '@/types/api/users-types';
+
+// Vue
+import { computed } from 'vue';
 
 // Components
 import UserCard from '@/components/pages/users/UserCard.vue';
@@ -56,17 +66,22 @@ import VLoader from '@/components/ui/icon/VLoader.vue';
 interface IUsersListProps {
     user: User | null;
     users?: User[];
+    search?: string;
     loading?: boolean;
 }
 
-withDefaults(defineProps<IUsersListProps>(), {
+const $props = withDefaults(defineProps<IUsersListProps>(), {
     users: () => [],
+    search: '',
     loading: false,
 });
 
 const $emit = defineEmits<{
     'update:user': [user: User];
 }>();
+
+// Computed
+const nodataLabel = computed<string>(() => ($props.search ? 'ничего не найдено' : 'начните поиск'));
 
 // Methods
 function onUserClick(user: User) {

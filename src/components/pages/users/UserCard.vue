@@ -74,6 +74,10 @@ const classList = computed(() =>
         .content {
             background-color: $base-200;
         }
+
+        .username {
+            margin-left: 1rem;
+        }
     }
 
     &:hover {
@@ -121,5 +125,6 @@ const classList = computed(() =>
 .username {
     color: $base-600;
     font-weight: 600;
+    transition: margin-left $default-transition;
 }
 </style>

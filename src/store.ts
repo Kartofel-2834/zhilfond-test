@@ -24,11 +24,18 @@ export const store = createStore<IUsersState>({
         async fetchUsers({ commit }, params): Promise<void> {
             if (!$api) throw new Error('$api is not provided');
 
-            const res = await $api.users.list(params);
-            const data = await res.json();
+            const queryParams = params as Record<string, string[]>;
+
+            if (!queryParams?.id?.length && !queryParams?.username?.length) {
+                commit('SET_USERS', []);
+            } else {
+                const res = await $api.users.list(queryParams);
+                const data = await res.json();
+
+                commit('SET_USERS', Array.isArray(data) ? data : []);
+            }
 
             commit('SET_CURRENT_USER', null);
-            commit('SET_USERS', Array.isArray(data) ? data : []);
         },
 
         setCurrentUser(store, payload) {
