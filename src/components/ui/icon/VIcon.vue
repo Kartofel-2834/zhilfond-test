@@ -11,6 +11,8 @@
 // Vue
 import { ref, computed, watch, onMounted } from 'vue';
 
+const basePath: string = import.meta.env.BASE_URL || '/';
+
 // Props
 interface IVIconProps {
     icon: string;
@@ -19,7 +21,7 @@ interface IVIconProps {
 }
 
 const $props = withDefaults(defineProps<IVIconProps>(), {
-    srcPath: '/icons/',
+    srcPath: 'icons/',
     size: null,
 });
 
@@ -32,7 +34,7 @@ onMounted(updateIcon);
 /**
  * Путь к svg файлу иконки
  */
-const iconPath = computed<string>(() => `${$props.srcPath}${$props.icon}.svg?raw`);
+const iconPath = computed<string>(() => `${basePath}${$props.srcPath}${$props.icon}.svg?raw`);
 
 /**
  * Если проп size указан, то width: size в ремах / 10
