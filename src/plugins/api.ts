@@ -1,29 +1,16 @@
 // Types
-import type { App } from 'vue';
-import type { IVuePlugin, Api } from '@/types';
+import type { App, Plugin } from 'vue';
 
 // Composables
-import { useRequest } from '@/composables/request';
-
-// Api parts
-import users from '@/api/users';
-
-const apiParts = {
-    users,
-};
+import { useApi } from '@/composables/api';
 
 function apiPluginInit(app: App): void {
-    const $request = useRequest();
-    const $api: Api = {};
-
-    for (const [apiKey, apiGetter] of Object.entries(apiParts)) {
-        $api[apiKey] = apiGetter($request);
-    }
+    const $api = useApi();
 
     app.provide('api', $api);
     app.config.globalProperties.$api = $api;
 }
 
-const apiPlugin: IVuePlugin = { install: apiPluginInit };
+const apiPlugin: Plugin = { install: apiPluginInit };
 
 export default apiPlugin;

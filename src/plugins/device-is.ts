@@ -1,6 +1,5 @@
 // Types
-import type { App } from 'vue';
-import type { IVuePlugin } from '@/types';
+import type { App, Plugin } from 'vue';
 import type { DeviceIs, IDeviceIsPluginOptions } from '@/types/composables/device-is-types';
 
 // Constants
@@ -35,6 +34,6 @@ function deviceIsPluginInit(app: App, options?: IDeviceIsPluginOptions): void {
     app.config.globalProperties.$deviceIs = deviceIs;
 }
 
-const deviceIsPlugin: IVuePlugin<IDeviceIsPluginOptions> = { install: deviceIsPluginInit };
+const deviceIsPlugin: Plugin<IDeviceIsPluginOptions[]> = { install: deviceIsPluginInit };
 
 export default deviceIsPlugin;

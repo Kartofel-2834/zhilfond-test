@@ -2,11 +2,12 @@
     <div :class="[$style.UsersPage, 'container']">
         <section :class="$style.wrapper">
             <UsersPane
-                v-model:user="currentUser"
                 v-model:search="search"
                 :class="$style.usersPane"
-                :users="usersPane"
+                :user="currentUser"
+                :users="usersList"
                 :loading="isLoading"
+                @update:user="onUserUpdate"
             />
 
             <transition
@@ -34,10 +35,14 @@
 <script lang="ts" setup>
 // Types
 import type { User } from '@/types/api/users-types';
-import type { Api } from '@/types/';
+// import type { Api } from '@/types/composables/api-types';
+import type { IUsersState } from '@/store';
 
 // Vue
-import { ref, inject, watch, onMounted } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
+
+// Vuex
+import { useStore } from 'vuex';
 
 // Utils
 import { sleep } from '@/assets/ts/utils/common-utils';
@@ -46,12 +51,10 @@ import { sleep } from '@/assets/ts/utils/common-utils';
 import UsersPane from '@/components/pages/users/UsersPane.vue';
 import UserDetail from '@/components/pages/users/UserDetail.vue';
 
-const $api = inject<Api>('api');
+// const $api = inject<Api>('api');
+const $store = useStore<IUsersState>();
 
 // Data
-const usersPane = ref<User[]>([]);
-const currentUser = ref<User | null>(null);
-
 const search = ref<string>('');
 const prevSearch = ref<string | null>(null);
 
@@ -63,6 +66,10 @@ onMounted(fetchUsers);
 
 // Watchers
 watch(() => search.value, onSearchUpdate);
+
+// Computed
+const currentUser = computed<User | null>(() => $store.state.currentUser);
+const usersList = computed<User[]>(() => $store.state.users);
 
 // Methods
 function onSearchUpdate(newValue: string, oldValue: string): void {
@@ -77,24 +84,22 @@ function onSearchUpdate(newValue: string, oldValue: string): void {
     }, 1000);
 }
 
+function onUserUpdate(user: User): void {
+    $store.dispatch('setCurrentUser', user);
+}
+
 async function fetchUsers(): Promise<void> {
     const start = Date.now();
 
     try {
-        if (!$api) throw new Error('$api is not provided');
-
         isLoading.value = true;
 
         const params = getSearchParams();
-        const res = await $api.users.list(params);
+        await $store.dispatch('fetchUsers', params);
 
-        const data = await res.json();
         const loadingTime = Date.now() - start;
 
         if (loadingTime < 600) await sleep(600 - loadingTime);
-
-        currentUser.value = null;
-        usersPane.value = Array.isArray(data) ? data : [];
     } catch (err) {
         console.warn('[UsersPage/fetchUsers] request error:', err);
     } finally {

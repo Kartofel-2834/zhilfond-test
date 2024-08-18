@@ -1,5 +1,5 @@
 // Types
-import type { ApiPart } from '@/types/index';
+import type { ApiPart } from '@/types/composables/api-types';
 import type { User } from '@/types/api/users-types';
 import type { RequestHelper } from '@/types/composables/request-types';
 
