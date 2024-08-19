@@ -21,15 +21,13 @@ export const store = createStore<IUsersState>({
     }),
 
     actions: {
-        async fetchUsers({ commit }, params): Promise<void> {
+        async fetchUsers({ commit }, params: Record<keyof User, string[]>): Promise<void> {
             if (!$api) throw new Error('$api is not provided');
 
-            const queryParams = params as Record<string, string[]>;
-
-            if (!queryParams?.id?.length && !queryParams?.username?.length) {
+            if (!params?.id?.length && !params?.username?.length) {
                 commit('SET_USERS', []);
             } else {
-                const res = await $api.users.list(queryParams);
+                const res = await $api.users.list(params);
                 const data = await res.json();
 
                 commit('SET_USERS', Array.isArray(data) ? data : []);
@@ -38,20 +36,20 @@ export const store = createStore<IUsersState>({
             commit('SET_CURRENT_USER', null);
         },
 
-        setCurrentUser(store, payload) {
+        setCurrentUser(store, payload: User | null): void {
             store.commit('SET_CURRENT_USER', payload);
         },
     },
 
     mutations: {
-        SET_USERS(state, payload) {
+        SET_USERS(state, payload: User[]): void {
             if (!Array.isArray(payload)) return payload;
 
             state.users = payload;
         },
 
-        SET_CURRENT_USER(state, payload) {
-            state.currentUser = payload as User;
+        SET_CURRENT_USER(state, payload: User): void {
+            state.currentUser = payload;
         },
     },
 });

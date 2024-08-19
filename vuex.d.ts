@@ -7,11 +7,11 @@ declare module 'vuex' {
         dispatch(actionName: string, payload: unknown): void | Promise<void>;
     };
 
-    type Mutation<TState extends Object> = (store: IStore<TState>, payload: unknown) => void;
+    type Mutation<TState extends Object> = (store: IStore<TState>, ...payload: any[]) => void;
 
     type Action<TState extends Object> = (
         state: IStore<TState>,
-        payload: unknown,
+        ...payload: any[],
     ) => void | Promise<void>;
 
     interface Module<TState extends Object> {
