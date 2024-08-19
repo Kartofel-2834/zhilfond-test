@@ -51,7 +51,6 @@ import { sleep } from '@/assets/ts/utils/common-utils';
 import UsersPane from '@/components/pages/users/UsersPane.vue';
 import UserDetail from '@/components/pages/users/UserDetail.vue';
 
-// const $api = inject<Api>('api');
 const $store = useStore<IUsersState>();
 
 // Data
@@ -105,17 +104,15 @@ async function fetchUsers(): Promise<void> {
 }
 
 function getSearchParams(): Record<string, string[]> {
-    let value = search.value.split(',');
-    value = value.map(item => item.trim());
-    value = value.filter(Boolean);
+    let values = search.value.split(',');
+    values = values.map(item => item.trim());
+    values = values.filter(Boolean);
 
-    let property: string = 'username';
+    const isDigitRegex = /^[0-9]+$/;
+    const id = values.filter(item => /^[0-9]+$/.test(item));
+    const username = values.filter(item => !isDigitRegex.test(item));
 
-    if (value.every(item => /^[0-9]+$/.test(item))) {
-        property = 'id';
-    }
-
-    return { [property]: value };
+    return { id, username };
 }
 </script>
 

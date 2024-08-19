@@ -53,7 +53,7 @@
 import type { User } from '@/types/api/users-types';
 
 // Vue
-import { computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 // Components
 import UserCard from '@/components/pages/users/UserCard.vue';
@@ -80,8 +80,20 @@ const $emit = defineEmits<{
     'update:user': [user: User];
 }>();
 
-// Computed
-const nodataLabel = computed<string>(() => ($props.search ? 'ничего не найдено' : 'начните поиск'));
+// Data
+const isToggled = ref<boolean>(false);
+
+// Watch
+watch(
+    () => $props.loading,
+    (isLoading: boolean) => {
+        isToggled.value = !isLoading && Boolean($props.search);
+    },
+);
+
+const nodataLabel = computed<string>(() => {
+    return isToggled.value ? 'ничего не найдено' : 'начните поиск';
+});
 
 // Methods
 function onUserClick(user: User) {

@@ -18,6 +18,7 @@
                 :user="user"
                 :users="users"
                 :loading="loading"
+                :search="search"
                 @update:user="onUserChange"
             />
         </div>
@@ -64,7 +65,7 @@ import { useClassList } from '@/composables/class-list';
 
 // Props
 interface IUsersPaneProps {
-    search: string;
+    search?: string;
     user?: User | null;
     users?: User[];
     loading?: boolean;
